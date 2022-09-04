@@ -7,22 +7,19 @@ Created on Sun Sep  4 11:09:49 2022
 
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
-from Blocks import Blocks
 from Handler import Handler
 import os
+
+# os.environ['FOOSBOT_BOT_TOKEN'] = 'xapp-'
+# os.environ['FOOSBOT_BOT_USER_TOKEN'] = 'xoxb-'
 
 # Tokens
 SLACK_BOT_TOKEN = os.environ['SLACK_BOT_TOKEN']
 SLACK_BOT_USER_TOKEN = os.environ['SLACK_BOT_USER_TOKEN']
 app = App(token=SLACK_BOT_TOKEN)
 
-
-
-# Class can be moved to different file
-
 # Initialize classes
-BLOCKS = Blocks()
-HANDLER = Handler()
+HANDLER = Handler(app, SLACK_BOT_TOKEN, SLACK_BOT_USER_TOKEN)
 
 # Connect event decorators with functions calling class functions.
 @app.event("message")

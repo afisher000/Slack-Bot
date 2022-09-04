@@ -6,8 +6,10 @@ Created on Sun Sep  4 11:53:55 2022
 """
 
 class Handler():
-    def __init__(self):
-        pass
+    def __init__(self, app, SLACK_BOT_TOKEN, SLACK_BOT_USER_TOKEN):
+        self.app = app
+        self.SLACK_BOT_TOKEN = SLACK_BOT_TOKEN
+        self.SLACK_BOT_USER_TOKEN = SLACK_BOT_USER_TOKEN
 
     def handle_message_events(self, body, logger):
         logger.info(body)
