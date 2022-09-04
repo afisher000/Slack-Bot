@@ -10,8 +10,8 @@ from slack_bolt.adapter.socket_mode import SocketModeHandler
 from Handler import Handler
 
 # Tokens (can export to environment variable in future)
-SLACK_BOT_TOKEN = 'xapp-1-A040W4WP002-4044175780881-119c09e94077fef5269c058d435234009d1ee85836f43f490c419a3319d45c4a'
-SLACK_BOT_USER_TOKEN = 'xoxb-4030047472195-4016024311719-OJO1GZn7dUWJCd1mmlRdeZxP'
+SLACK_BOT_TOKEN = os.environ['SLACK_BOT_TOKEN']
+SLACK_BOT_USER_TOKEN = os.environ['SLACK_BOT_USER_TOKEN']
 app = App(token=SLACK_BOT_TOKEN)
 
 # Initialize helper classes
