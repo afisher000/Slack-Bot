@@ -10,6 +10,14 @@ import re
 from Blocks import Blocks
 import pickle
 
+
+# TO IMPLEMENT:
+    # move(index, room, location)
+        # index of of table (returned with find(item))
+        # populate menu with submit/cancel button
+        
+    # add self.update_table function to add row and save
+        
 class Handler():
     def __init__(self, app, SLACK_BOT_TOKEN, SLACK_BOT_USER_TOKEN):
         self.labmap = pd.read_csv('lab_organization.csv')
@@ -19,7 +27,7 @@ class Handler():
         self.Blocks = Blocks()
         
     def parse_call(self, text, say):
-        regex = re.compile('(<[^>]*>)([\w\s]*)\(([\w\s]*)\)')
+        regex = re.compile('(<[^>]*>)([\w\s]*)\(([^\)]*)\)')
         try:
             groups = regex.search(text).groups()
             mention, keyword, item = [group.strip() for group in groups]
@@ -68,7 +76,6 @@ class Handler():
         logger.info(body)
         
     def handle_app_mention_events(self, body, logger, event, say):
-        
         keyword, item = self.parse_call(event['text'], say)
         
         if keyword=='find':
@@ -79,6 +86,19 @@ class Handler():
                                              channel=event['channel'],
                                              text='Default text',
                                              blocks=self.add_item_blocks(item))
+            
+        elif keyword=='addlocation':
+            args = item.split(',')
+            if len(args)==2:
+                room, location = [arg.strip().lower() for arg in args]
+            else:
+                say(token=self.SLACK_BOT_USER_TOKEN, text='Wrong number of arguments\naddloaction(room, location)')
+                
+            self.labmap.loc[len(self.labmap)] = ['', room, location]
+            self.labmap.to_csv('lab_organization.csv', index=False)
+            
+            say(token = self.SLACK_BOT_USER_TOKEN, text=f'Successfully added \"{location}\" in \"{room}\"')
+            
             
         elif keyword=='help':
             say(token=self.SLACK_BOT_USER_TOKEN,
