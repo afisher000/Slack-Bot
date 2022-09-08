@@ -10,7 +10,7 @@ from slack_bolt.adapter.socket_mode import SocketModeHandler
 from Handler import Handler
 import os
 
-# Tokens (can export to environment variable in future)
+# Tokens
 SLACK_BOT_TOKEN = os.environ['LABBOT_BOT_TOKEN']
 SLACK_BOT_USER_TOKEN = os.environ['LABBOT_BOT_USER_TOKEN']
 app = App(token=SLACK_BOT_TOKEN)
@@ -36,6 +36,16 @@ def handle_room_selection(ack, body, logger):
 @app.action("database_submission")
 def handle_database_submission(ack, body, logger):
     HANDLER.handle_database_submission(ack, body, logger)
+    logger.info(body)
+
+# Dummy connections to avoid warnings
+@app.action('static_select-action')
+def handle_some_action(ack, body, logger):
+    ack()
+    logger.info(body)
+    
+@app.event('app_home_opened')
+def handle_app_home_opened_events(body, logger):
     logger.info(body)
     
 if __name__=="__main__":

@@ -19,7 +19,7 @@ class Handler():
         self.Blocks = Blocks()
         
     def parse_call(self, text, say):
-        regex = re.compile('(<[^>]*>)([\w\s]*)\((\w*)\)')
+        regex = re.compile('(<[^>]*>)([\w\s]*)\(([\w\s]*)\)')
         try:
             groups = regex.search(text).groups()
             mention, keyword, item = [group.strip() for group in groups]
@@ -47,12 +47,15 @@ class Handler():
     def add_item_blocks(self, item, room=None):
         if room is None:
             locations = self.labmap.location.unique()
+            placeholder_text = 'Select an item'
         else:
             locations = self.labmap[self.labmap.room==room].location.unique()
+            placeholder_text = room
 
         blocks = [self.Blocks.plain_text(item),
                   self.Blocks.static_select('room_id', 'Room:', self.labmap.room.unique(),
-                                            action_id='room_selection'),
+                                            action_id='room_selection',
+                                            placeholder_text=placeholder_text),
                   self.Blocks.static_select('location_id', 'Location:', locations),
                   self.Blocks.button('button_id','Add to Database','Submit', 
                                      action_id='database_submission')]

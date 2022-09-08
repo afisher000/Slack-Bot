@@ -53,7 +53,7 @@ steering magnet parts,undulator room,black optic table
 zipties,undulator room,red toolchest
 posts and holders,alaser,black cabinet
 "one inch (1"") optics and posts",alaser,black cabinet
-angled optic brackets,alaser,black cabinet
+angled right angle optic brackets,alaser,black cabinet
 "two inch (2"") optics and posts",alaser,black cabinet
 bnc connectors,control room,work bench organizer
 labelmaker tape,control room,work bench organizer
@@ -69,4 +69,7 @@ viton and copper vacuum gaskets,control room,work bench
 aluminum foil,control room,work bench
 blis interferometer,control room,work bench
 newport motion controller,control room,work bench
-dummyitem,organizer bins,control room
+v blocks,alaser,black cabinet
+optic rail breadboards,alaser,black cabinet
+translation bases,alaser,black cabinet
+weight scale,undulator room,red toolchest
