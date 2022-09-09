@@ -17,6 +17,8 @@ import pickle
         # populate menu with submit/cancel button
         
     # add self.update_table function to add row and save
+    
+    # whenever a new player is added, additional entries need to be added to ratings.
         
 class Handler():
     def __init__(self, app, SLACK_BOT_TOKEN, SLACK_BOT_USER_TOKEN):
