@@ -21,24 +21,38 @@ HANDLER = Handler(app = app,
                   SLACK_BOT_USER_TOKEN = SLACK_BOT_USER_TOKEN)
 
 # Connect events
-@app.event("message")
-def handle_message_events(body, logger):
-    HANDLER.handle_message_events(body, logger)
-
 @app.event("app_mention")
 def handle_app_mention_events(body, logger, event, say):
     HANDLER.handle_app_mention_events(body, logger, event, say)
     
-@app.action("room_selection")
-def handle_room_selection(ack, body, logger):
-    HANDLER.handle_room_selection(ack, body, logger)
+@app.action("room_selection_adding")
+def handle_room_selection_adding(ack, body, logger):
+    HANDLER.handle_room_selection_adding(ack, body, logger)
     
 @app.action("database_submission")
 def handle_database_submission(ack, body, logger):
     HANDLER.handle_database_submission(ack, body, logger)
     logger.info(body)
 
+@app.action("room_selection_moving")
+def handle_room_selection_moving(ack, body, logger):
+    HANDLER.handle_room_selection_moving(ack, body, logger)
+
+@app.action("moving_submission")
+def handle_moving_submission(ack, body, logger):
+    HANDLER.handle_moving_submission(ack, body, logger)
+    logger.info(body)
+    
+@app.action("cancel_message")
+def handle_cancel_message(ack, body, logger):
+    HANDLER.handle_cancel_message(ack, body, logger)
+    logger.info(body)
+    
 # Dummy connections to avoid warnings
+@app.event("message")
+def handle_message_events(body, logger):
+    HANDLER.handle_message_events(body, logger)
+    
 @app.action('static_select-action')
 def handle_some_action(ack, body, logger):
     ack()

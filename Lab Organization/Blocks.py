@@ -9,12 +9,14 @@ class Blocks():
     def __init__(self):
         pass
     
+    def option_object(self, item):
+        return {'text':{'type':'plain_text', 'text':str(item)}, 'value':str(item)} 
+        
     def options_dict(self, items):
-        options = [{'text':{'type':'plain_text', 'text':str(item)}, 'value':str(item)} 
-                for item in items] 
-        return options
+        return [self.option_object(item) for item in items]
     
-    def plain_text_input(self, block_id, label, action_id):
+    def plain_text_input(self, block_id, label, action_id,
+                         initial_value=None):
         block = {'type':'input',
                  'block_id':block_id,
                  'element':{'type':'plain_text_input',
@@ -22,7 +24,9 @@ class Blocks():
                  'label':{'type':'plain_text',
                           'text':label}
                  }
-
+        
+        if initial_value is not None:
+            block['element']['initial_value'] = initial_value
         return block
     
     def plain_text(self, text):
@@ -32,11 +36,16 @@ class Blocks():
                  }
         return block
     
-    
+    def actions(self, *args):
+        elements = [arg for arg in args]
+        block = {'type':'actions',
+                 'elements':elements}
+        return block
     
     def static_select(self, block_id, text, items, 
                       action_id='static_select-action',
-                      placeholder_text='Select an item'):
+                      placeholder_text='Select an item',
+                      initial_option=None):
         block = {'type':'section',
                  'block_id':block_id,
                  'text':{'type':'mrkdwn',
@@ -49,6 +58,9 @@ class Blocks():
                               }
                  }
         
+        if initial_option is not None:
+            block['accessory']['initial_option'] = initial_option
+            
         return block
     
     def button(self, block_id, label, button_text, action_id='button-action'):
