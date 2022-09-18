@@ -21,9 +21,10 @@ HANDLER = Handler(app = app,
                   SLACK_BOT_USER_TOKEN = SLACK_BOT_USER_TOKEN)
 
 # Connect events
-@app.event("app_mention")
-def handle_app_mention_events(body, logger, event, say):
-    HANDLER.handle_app_mention_events(body, logger, event, say)
+@app.event("message")
+def handle_message_events(body, logger, event, say):
+    HANDLER.handle_message_events(body, logger, event, say)
+
     
 @app.action("room_selection_adding")
 def handle_room_selection_adding(ack, body, logger):
@@ -49,9 +50,7 @@ def handle_cancel_message(ack, body, logger):
     logger.info(body)
     
 # Dummy connections to avoid warnings
-@app.event("message")
-def handle_message_events(body, logger):
-    HANDLER.handle_message_events(body, logger)
+
     
 @app.action('static_select-action')
 def handle_some_action(ack, body, logger):

@@ -27,14 +27,12 @@ class Handler():
             @LabBot addlocation(room, location)'''
         
     def parse_call(self, text, say):
-        regex = re.compile('(<[^>]*>)([\w\s]*)\(([^\)]*)\)')
+        regex = re.compile('^([\w\s]*)\(([^\)]*)\)$')
         try:
             groups = regex.search(text).groups()
-            mention, keyword, item = [group.strip().lower() for group in groups]
+            keyword, item = [group.strip().lower() for group in groups]
         except:
-            say(token=self.SLACK_BOT_USER_TOKEN, 
-                text='''Cannot parse input''')
-            keyword = 'help'
+            keyword = None
             item = None
         
         return keyword, item
@@ -204,7 +202,15 @@ class Handler():
                                     text=updated_message)
         logger.info(body)
         
-    def handle_app_mention_events(self, body, logger, event, say):
+    def handle_message_events(self, body, logger, event, say):
+        
+        if 'text' not in event.keys():
+            return
+        
+        if event['channel'][0]!='D':
+            print('Not a direct message to bot')
+            return
+        
         keyword, item = self.parse_call(event['text'], say)
         
         if keyword=='find':
@@ -232,9 +238,6 @@ class Handler():
         elif keyword=='help':
             say(token=self.SLACK_BOT_USER_TOKEN,
                 text=self.possible_commands)
-                    
-        else: 
-            say(token=self.SLACK_BOT_USER_TOKEN,
-                text = 'Command not recognized..\n'+self.possible_commands)
+
 
         logger.info(body)
