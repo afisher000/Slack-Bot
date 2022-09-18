@@ -25,6 +25,12 @@ class Blocks():
 
         return block
     
+    def actions(self, *args):
+        elements = [arg for arg in args]
+        block = {'type':'actions',
+                 'elements':elements}
+        return block
+    
     def plain_text(self, text):
         block = {'type':'context',
                  'elements':[{'type':'plain_text',

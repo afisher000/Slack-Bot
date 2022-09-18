@@ -10,6 +10,15 @@ import re
 from Blocks import Blocks
 import pickle
 
+# TO IMPLEMENT:
+    # addlocation(room, location)
+        # Add empty string item with new room and location to table
+        # Include yes/no confirmation
+    
+    # move(index, room, location)
+        # index of table, room and location are optional
+        # Present menu with submit/cancel button
+        
 class Handler():
     def __init__(self, app, SLACK_BOT_TOKEN, SLACK_BOT_USER_TOKEN):
         self.labmap = pd.read_csv('lab_organization.csv')
@@ -19,14 +28,12 @@ class Handler():
         self.Blocks = Blocks()
         
     def parse_call(self, text, say):
-        regex = re.compile('(<[^>]*>)([\w\s]*)\((\w*)\)')
+        regex = re.compile('^([\w\s]*)\(([^\)]*)\)$')
         try:
             groups = regex.search(text).groups()
-            mention, keyword, item = [group.strip() for group in groups]
+            keyword, item = [group.strip().lower() for group in groups]
         except:
-            say(token=self.SLACK_BOT_USER_TOKEN, 
-                text='''Cannot parse input''')
-            keyword = 'help'
+            keyword = None
             item = None
         
         return keyword, item
@@ -54,20 +61,29 @@ class Handler():
                   self.Blocks.static_select('room_id', 'Room:', self.labmap.room.unique(),
                                             action_id='room_selection'),
                   self.Blocks.static_select('location_id', 'Location:', locations),
-                  self.Blocks.button('button_id','Add to Database','Submit', 
-                                     action_id='database_submission')]
+                  self.Blocks.actions(self.Blocks.button('cancel_id','','Cancel', action_id='cancel_message')['accessory'],
+                                      self.Blocks.button('submit_id','','Add to Database', action_id='database_submission')['accessory'])]
         
         return blocks
         
-
         
-    def handle_message_events(self, body, logger):
-        logger.info(body)
-        
-    def handle_app_mention_events(self, body, logger, event, say):
+    def handle_cancellation(self, ack, body, logger):
+        ack()
+        ts = body['message']['ts']
+        channel_id = body['channel']['id']
+        self.app.client.chat_delete(token=self.SLACK_BOT_USER_TOKEN,
+                                   channel=channel_id, 
+                                   ts=ts,
+                                   blocks=None)
+        return
+    def handle_message_events(self, body, logger, event, say):
+        print(f'{event["channel"]}')
+        if event['channel'][0]!='D':
+            print('Not a direct message to bot')
+            return
         
         keyword, item = self.parse_call(event['text'], say)
-        
+        print(f'{keyword},{item}')
         if keyword=='find':
             self.find_item(item, event['channel'])
 

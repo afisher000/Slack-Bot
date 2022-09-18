@@ -22,12 +22,12 @@ HANDLER = Handler(app = app,
 
 # Connect events
 @app.event("message")
-def handle_message_events(body, logger):
-    HANDLER.handle_message_events(body, logger)
-
-@app.event("app_mention")
-def handle_app_mention_events(body, logger, event, say):
-    HANDLER.handle_app_mention_events(body, logger, event, say)
+def handle_message_events(body, logger, event, say):
+    HANDLER.handle_message_events(body, logger, event, say)
+    
+@app.action("cancel_message")
+def handle_cancellation(ack, body, logger):
+    HANDLER.handle_cancellation(ack, body, logger)
     
 @app.action("room_selection")
 def handle_room_selection(ack, body, logger):
