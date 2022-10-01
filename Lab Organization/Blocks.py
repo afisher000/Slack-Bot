@@ -29,6 +29,12 @@ class Blocks():
             block['element']['initial_value'] = initial_value
         return block
     
+    def actions(self, *args):
+        elements = [arg for arg in args]
+        block = {'type':'actions',
+                 'elements':elements}
+        return block
+    
     def plain_text(self, text):
         block = {'type':'context',
                  'elements':[{'type':'plain_text',

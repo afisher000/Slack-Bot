@@ -26,11 +26,10 @@ HANDLER = Handler(app, SLACK_BOT_TOKEN, SLACK_BOT_USER_TOKEN)
 def handle_message_events(body, logger):
     HANDLER.handle_message_events(body, logger)
 
-@app.event("app_mention")
-def handle_app_mention_events(body, logger):
-    HANDLER.handle_app_mention_events(body, logger)
-    
-    
+
+@app.action("cancel_message")
+def handle_cancellation(ack, body, logger):
+    HANDLER.handle_cancellation(ack, body, logger)
     
 if __name__=="__main__":
     SocketModeHandler(app, SLACK_BOT_TOKEN).start()

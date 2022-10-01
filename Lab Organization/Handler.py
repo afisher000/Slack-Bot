@@ -21,10 +21,10 @@ class Handler():
         self.SLACK_BOT_TOKEN = SLACK_BOT_TOKEN
         self.Blocks = Blocks()
         self.possible_commands = '''Function calls:
-            find(item)
-            add(item)
-            move(index)
-            addlocation(room, location)'''
+            @LabBot find(item)
+            @LabBot add(item)
+            @LabBot move(index)
+            @LabBot addlocation(room, location)'''
         
     def parse_call(self, text, say):
         regex = re.compile('^([\w\s]*)\(([^\)]*)\)$')
@@ -97,6 +97,10 @@ class Handler():
         return
         
 
+        
+    def handle_message_events(self, body, logger):
+        logger.info(body)
+        
     def handle_moving_submission(self, ack, body, logger):
         ack()
         
@@ -182,7 +186,7 @@ class Handler():
         item = body['state']['values']['text_input_id']['plain_text_input-action']['value']
 
         # Add to database and save
-        self.labmap.loc[len(self.labmap)] = [item, room, location]
+        self.labmap.loc[len(self.labmap)] = [item, location, room]
         self.labmap.to_csv('lab_organization.csv', index=False)
         
         # Update message
@@ -199,6 +203,14 @@ class Handler():
         logger.info(body)
         
     def handle_message_events(self, body, logger, event, say):
+        
+        if 'text' not in event.keys():
+            return
+        
+        if event['channel'][0]!='D':
+            print('Not a direct message to bot')
+            return
+        
         keyword, item = self.parse_call(event['text'], say)
         
         if keyword=='find':
@@ -226,5 +238,6 @@ class Handler():
         elif keyword=='help':
             say(token=self.SLACK_BOT_USER_TOKEN,
                 text=self.possible_commands)
+
 
         logger.info(body)
