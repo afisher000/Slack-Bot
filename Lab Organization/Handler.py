@@ -21,20 +21,18 @@ class Handler():
         self.SLACK_BOT_TOKEN = SLACK_BOT_TOKEN
         self.Blocks = Blocks()
         self.possible_commands = '''Function calls:
-            @LabBot find(item)
-            @LabBot add(item)
-            @LabBot move(index)
-            @LabBot addlocation(room, location)'''
+            find(item)
+            add(item)
+            move(index)
+            addlocation(room, location)'''
         
     def parse_call(self, text, say):
-        regex = re.compile('(<[^>]*>)([\w\s]*)\(([^\)]*)\)')
+        regex = re.compile('^([\w\s]*)\(([^\)]*)\)$')
         try:
             groups = regex.search(text).groups()
-            mention, keyword, item = [group.strip().lower() for group in groups]
+            keyword, item = [group.strip().lower() for group in groups]
         except:
-            say(token=self.SLACK_BOT_USER_TOKEN, 
-                text='''Cannot parse input''')
-            keyword = 'help'
+            keyword = None
             item = None
         
         return keyword, item
@@ -99,10 +97,6 @@ class Handler():
         return
         
 
-        
-    def handle_message_events(self, body, logger):
-        logger.info(body)
-        
     def handle_moving_submission(self, ack, body, logger):
         ack()
         
@@ -188,7 +182,7 @@ class Handler():
         item = body['state']['values']['text_input_id']['plain_text_input-action']['value']
 
         # Add to database and save
-        self.labmap.loc[len(self.labmap)] = [item, location, room]
+        self.labmap.loc[len(self.labmap)] = [item, room, location]
         self.labmap.to_csv('lab_organization.csv', index=False)
         
         # Update message
@@ -204,7 +198,7 @@ class Handler():
                                     text=updated_message)
         logger.info(body)
         
-    def handle_app_mention_events(self, body, logger, event, say):
+    def handle_message_events(self, body, logger, event, say):
         keyword, item = self.parse_call(event['text'], say)
         
         if keyword=='find':
@@ -232,9 +226,5 @@ class Handler():
         elif keyword=='help':
             say(token=self.SLACK_BOT_USER_TOKEN,
                 text=self.possible_commands)
-                    
-        else: 
-            say(token=self.SLACK_BOT_USER_TOKEN,
-                text = 'Command not recognized..\n'+self.possible_commands)
 
         logger.info(body)
